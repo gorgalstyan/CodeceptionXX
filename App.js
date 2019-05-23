@@ -7,8 +7,8 @@
  */
 
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, SafeAreaView, Platform } from 'react-native';
-
+import { FlatList, StyleSheet, Text, View, SafeAreaView, Platform, DeviceEventEmitter } from 'react-native';
+import Beacons from 'react-native-beacons-manager';
 import { ListItem } from 'react-native-elements'
 import Slider from '@react-native-community/slider';
 
@@ -28,8 +28,8 @@ const rooms = roomsData.map(rd => rd.Id).map(rd => {
   };
 });
 
-const minTime = 6*60;
-const maxTime = 19*60;
+const minTime = 6 * 60;
+const maxTime = 19 * 60;
 const minMeetingDuration = 15;
 
 type Props = {};
@@ -39,13 +39,39 @@ export default class App extends Component<Props> {
 
     const mmt = moment();
     const mmtMidnight = mmt.clone().startOf('day');
-    let currentMins = mmt.diff(mmtMidnight, 'minutes');    
+    let currentMins = mmt.diff(mmtMidnight, 'minutes');
     currentMins = Math.floor(currentMins / 15) * 15;
 
     this.state = {
+      foundRooms: {},
       startTime: currentMins,
       endTime: currentMins + 60,
     }
+  }
+
+  componentWillMount() {
+    Beacons.requestWhenInUseAuthorization();
+    Beacons.startRangingBeaconsInRegion({ identifier: 'Thanks', uuid: 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825' });
+    Beacons.startUpdatingLocation();
+    DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
+      console.log('found becons', data);
+      let newFoundRooms = {};
+      data.beacons.forEach(element => {
+        newFoundRooms = this.state.foundRooms;
+        newFoundRooms[element.major] = {
+          proximity: element.proximity,
+          distance: element.accuracy ? element.accuracy.toFixed(2) : 20
+        }
+        this.setState({
+          foundRooms: newFoundRooms
+        });
+      });
+      console.log('found beacons', this.state.foundRooms);
+    });
+  }
+
+  componentWillUnMount() {
+    this.beaconsDidRange = null;
   }
 
   keyExtractor = (item, index) => item.EmailAddress;
@@ -69,9 +95,9 @@ export default class App extends Component<Props> {
     const maxStart = endTime - minMeetingDuration;
     if (maxStart < startTime) startTime = maxStart;
     this.setState({
-        startTime,
-        endTime,
-      }
+      startTime,
+      endTime,
+    }
     )
   }
 
@@ -85,9 +111,9 @@ export default class App extends Component<Props> {
       endTime = startTime + minMeetingDuration;
     };
     this.setState({
-        startTime,
-        endTime,
-      }
+      startTime,
+      endTime,
+    }
     )
   }
 
@@ -100,7 +126,7 @@ export default class App extends Component<Props> {
     return (
       <SafeAreaView style={styles.droidSafeArea}>
         <View>
-          <Text style={{padding: 10, fontSize: 20}}>{startTimeText} - {endTimeText}</Text>
+          <Text style={{ padding: 10, fontSize: 20 }}>{startTimeText} - {endTimeText}</Text>
           <Slider
             style={{ height: 50 }}
             value={this.state.startTime}
