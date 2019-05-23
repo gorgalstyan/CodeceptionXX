@@ -18,19 +18,32 @@ const roomsData = require('./fixtures/CA-KM-MeetingRooms.json')
 
 const regex = /capacity/ig;
 
-const rooms = roomsData.map(rd => rd.Id).map(rd => {
-  const parts = rd.Name.split(regex) || []
+// const rooms = roomsData.map(rd => rd.Id).map(rd => {
+//   const parts = rd.Name.split(regex) || []
+//   const sub = parts[1];
+//   return {
+//     ...rd,
+//     title: parts[0] || rd.Name,
+//     subTitle: (sub && `Capacity ${sub}`) || '',
+//   };
+// });
+
+function getRoomData(id) {
+  const roomData = roomsData[id];
+  const parts = roomData.Name.split(regex) || []
   const sub = parts[1];
   return {
-    ...rd,
-    title: parts[0] || rd.Name,
+    ...roomData,
+    title: parts[0] || roomData.Name,
     subTitle: (sub && `Capacity ${sub}`) || '',
   };
-});
+};
 
 const minTime = 6 * 60;
 const maxTime = 19 * 60;
 const minMeetingDuration = 15;
+
+
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -55,18 +68,27 @@ export default class App extends Component<Props> {
     Beacons.startUpdatingLocation();
     DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
       console.log('found becons', data);
-      let newFoundRooms = {};
-      data.beacons.forEach(element => {
-        newFoundRooms = this.state.foundRooms;
-        newFoundRooms[element.major] = {
-          proximity: element.proximity,
-          distance: element.accuracy ? element.accuracy.toFixed(2) : 20
-        }
-        this.setState({
-          foundRooms: newFoundRooms
+      Beacons.startRangingBeaconsInRegion({ identifier: 'Thanks', uuid: 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825' });
+      Beacons.startUpdatingLocation();
+
+      DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
+        let newFoundRooms = {};
+        data.beacons.forEach(element => {
+          newFoundRooms = this.state.foundRooms;
+          newFoundRooms[element.major] = {
+            proximity: element.proximity,
+            distance: element.accuracy ? element.accuracy.toFixed(2) : 20,
+            ...getRoomData(element.major)
+          }
+          console.log('found rooms', newFoundRooms);
+          const roomArray = Object.keys(newFoundRooms).map(i => newFoundRooms[i])
+          this.setState({
+            foundRooms: newFoundRooms,
+            roomArray: roomArray
+          });
         });
+        // console.log('found beacons', this.state.foundRooms);
       });
-      console.log('found beacons', this.state.foundRooms);
     });
   }
 
@@ -79,7 +101,7 @@ export default class App extends Component<Props> {
   renderItem = ({ item }) => (
     <ListItem
       title={item.title}
-      subtitle={item.subTitle}
+      subtitle={item.subTitle + ' Distance: ' + item.distance + 'm'}
       // leftAvatar={{ source: { uri: item.avatar_url } }}
       bottomDivider={true}
     />
@@ -144,11 +166,11 @@ export default class App extends Component<Props> {
             onValueChange={val => this.onEndValueChange(val)}
           />
         </View>
-        <FlatList
+        {Object.keys(this.state.foundRooms).length > 0 ? <FlatList
           keyExtractor={this.keyExtractor}
-          data={rooms}
+          data={this.state.roomArray}
           renderItem={this.renderItem}
-        />
+        /> : <Text>No Nearby Rooms Available</Text>}
       </SafeAreaView>
     )
   }
