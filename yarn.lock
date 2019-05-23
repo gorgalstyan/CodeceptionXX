@@ -4933,13 +4933,6 @@ react-native-elements@^1.1.0:
     react-native-ratings "^6.3.0"
     react-native-status-bar-height "^2.2.0"
 
-react-native-range-slider@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-range-slider/-/react-native-range-slider-0.1.2.tgz#f1bc020aa9094340a8ae22c25e22cbcb5af48710"
-  integrity sha512-EZLOtcnhOcOv4yZtPT826jZknqn+h3zbqM08tc3dFbakBFMoK4aN5GAuHP2RJ3PhMtwzl2h6HzOeFilq8cKaXQ==
-  dependencies:
-    prop-types "^15.5.10"
-
 react-native-ratings@^6.3.0:
   version "6.3.1"
   resolved "https://registry.yarnpkg.com/react-native-ratings/-/react-native-ratings-6.3.1.tgz#4e4bd87f376423dc62c933f570fc1932c78adaa4"
