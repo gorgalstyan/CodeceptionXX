@@ -1,0 +1,146 @@
+[
+    {
+        "Id": {
+            "Name": "CA-KM Baker Lake Capacity 4",
+            "EmailAddress": "kmrm013@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Beaufort Sea Capacity 4",
+            "EmailAddress": "kmrm015@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Chilliwack River Capacity 6 TV, Polycom",
+            "EmailAddress": "kmrm008@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Credit River Capacity 4",
+            "EmailAddress": "kmrm020@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Dedicated Walmart Labs Lake Erie Capacity 8 TV",
+            "EmailAddress": "kmrm023@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM First Aid Room",
+            "EmailAddress": "kmrm006@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Fraser River Capacity 6 TV, Polycom",
+            "EmailAddress": "kmrm009@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Great Bear Lake Capacity 4",
+            "EmailAddress": "kmrm002@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Grenadier Pond Capacity 24 TV, VC, Polycom",
+            "EmailAddress": "kmrm012@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Lake Huron Capacity 10 TV, Polycom",
+            "EmailAddress": "kmrm011@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Lake Louise Capacity 4",
+            "EmailAddress": "kmrm014@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Lake Nipigon Capacity 10 TV, Polycom",
+            "EmailAddress": "kmrm010@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Lake Ontario Capacity 4",
+            "EmailAddress": "kmrm022@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Lake Superior Capacity 4",
+            "EmailAddress": "kmrm021@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Mackenzie River Capacity 4",
+            "EmailAddress": "kmrm003@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Miramichi River Capacity 10",
+            "EmailAddress": "kmrm016@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Nelson River Capacity 2-4",
+            "EmailAddress": "kmrm004@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    },
+    {
+        "Id": {
+            "Name": "CA-KM Saint Lawrence River Capacity 10 TV, Polycom, Smartboard",
+            "EmailAddress": "kmrm005@email.wal-mart.com",
+            "RoutingType": "SMTP",
+            "MailboxType": "Mailbox"
+        }
+    }
+]
