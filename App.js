@@ -10,7 +10,6 @@ import React, { Component } from 'react';
 import { FlatList, StyleSheet, Text, View, SafeAreaView, Platform } from 'react-native';
 
 import { ListItem } from 'react-native-elements'
-import RangeSlider from 'react-native-range-slider'
 
 const roomsData = require('./fixtures/CA-KM-MeetingRooms.json')
 
@@ -50,17 +49,6 @@ export default class App extends Component<Props> {
           keyExtractor={this.keyExtractor}
           data={rooms}
           renderItem={this.renderItem}
-        />
-        <RangeSlider
-          minValue={0}
-          maxValue={100}
-          tintColor={'#da0f22'}
-          handleBorderWidth={1}
-          handleBorderColor="#454d55"
-          selectedMinimum={20}
-          selectedMaximum={40}
-          style={{ flex: 1, height: 70, padding: 10, backgroundColor: '#ddd' }}
-          onChange={(data) => { console.log(data); }}
         />
       </SafeAreaView>
     )
