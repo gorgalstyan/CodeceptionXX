@@ -31,7 +31,7 @@ export default class App extends Component<Props> {
     super(props);
 
     this.state = {
-      foundRooms: [],
+      foundRooms: {},
     }
   }
 
@@ -46,16 +46,20 @@ export default class App extends Component<Props> {
       data.beacons.forEach(element => {
         newFoundRooms = this.state.foundRooms;
         newFoundRooms[element.major] = {
-          proximity: element.proxomity,
+          proximity: element.proximity,
           distance: element.accuracy ? element.accuracy.toFixed(2) : 20
         }
         this.setState({
           foundRooms: newFoundRooms
         });
       });
+      console.log('found beacons', this.state.foundRooms);
     });
   }
 
+  componentWillUnMount() {
+    this.beaconsDidRange = null;
+  }
 
   keyExtractor = (item, index) => item.EmailAddress;
 
