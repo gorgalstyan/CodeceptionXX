@@ -7,8 +7,8 @@
  */
 
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, SafeAreaView, Platform } from 'react-native';
-
+import { FlatList, StyleSheet, Text, View, SafeAreaView, Platform, DeviceEventEmitter } from 'react-native';
+import Beacons from 'react-native-beacons-manager';
 import { ListItem } from 'react-native-elements'
 import RangeSlider from 'react-native-range-slider'
 
@@ -30,7 +30,33 @@ type Props = {};
 export default class App extends Component<Props> {
   constructor(props) {
     super(props);
+
+    this.state = {
+      foundRooms: [],
+    }
   }
+
+  componentWillMount() {
+    Beacons.requestWhenInUseAuthorization();
+    Beacons.startRangingBeaconsInRegion({identifier: 'Thanks', uuid: 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825'});
+    Beacons.startUpdatingLocation();
+
+    DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
+      console.log('found becons', data);
+      let newFoundRooms = {};
+      data.beacons.forEach(element => {
+        newFoundRooms = this.state.foundRooms;
+        newFoundRooms[element.major] = {
+          proximity: element.proxomity,
+          distance: element.accuracy ? element.accuracy.toFixed(2) : 20
+        }
+        this.setState({
+          foundRooms: newFoundRooms
+        });
+      });
+    });
+  }
+
 
   keyExtractor = (item, index) => item.EmailAddress;
 

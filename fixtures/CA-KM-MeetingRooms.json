@@ -116,7 +116,10 @@
             "Name": "CA-KM Mackenzie River Capacity 4",
             "EmailAddress": "kmrm003@email.wal-mart.com",
             "RoutingType": "SMTP",
-            "MailboxType": "Mailbox"
+            "MailboxType": "Mailbox",
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": "10067",
+            "minor": "26049"
         }
     },
     {
@@ -132,7 +135,10 @@
             "Name": "CA-KM Nelson River Capacity 2-4",
             "EmailAddress": "kmrm004@email.wal-mart.com",
             "RoutingType": "SMTP",
-            "MailboxType": "Mailbox"
+            "MailboxType": "Mailbox",
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": "10066",
+            "minor": "26049"
         }
     },
     {
@@ -140,7 +146,10 @@
             "Name": "CA-KM Saint Lawrence River Capacity 10 TV, Polycom, Smartboard",
             "EmailAddress": "kmrm005@email.wal-mart.com",
             "RoutingType": "SMTP",
-            "MailboxType": "Mailbox"
+            "MailboxType": "Mailbox",
+            "uuid": "FDA50693-A4E2-4FB1-AFCF-C6EB07647825",
+            "major": "10065",
+            "minor": "26049"
         }
     }
 ]
