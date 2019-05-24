@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CodeceptionXX.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>0677208E30987C53D9E297B71ADF35BDF2ABD1A6</string>
+				<key>dateExpires</key>
+				<string>2019-11-08</string>
+				<key>type</key>
+				<string>iOS Development</string>
+			</dict>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>TY3P9FA953.ca.walmart.gor.CodeceptionXX</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>TY3P9FA953</string>
+				<key>get-task-allow</key>
+				<true/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>TY3P9FA953.ca.walmart.gor.CodeceptionXX</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>CodeceptionXX.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>380babf6-5efb-41cb-b581-1448c5cea493</string>
+				<key>name</key>
+				<string>iOS Team Provisioning Profile: *</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>TY3P9FA953</string>
+				<key>name</key>
+				<string>Walmart Canada Corp.</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>

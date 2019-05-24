@@ -62,9 +62,11 @@ export default class TimeSelector extends Component {
         const { startTime, endTime } = this.state;
         const startTimeText = moment(0, 'HH').add(startTime, 'm').format("h:mm a");
         const endTimeText = moment(0, 'HH').add(endTime, 'm').format("h:mm a");
+        const dateText = moment().format("ddd Do MMM")
         return (
             <View>
-                <Text style={{ padding: 10, fontSize: 20 }}>{startTimeText} - {endTimeText}</Text>
+                <Text style={{ padding: 10, fontSize: 20 }}>{dateText}</Text>
+                <Text style={{ padding: 5, fontSize: 20 }}>{startTimeText} - {endTimeText}</Text>
                 <Slider
                     style={{ height: 50 }}
                     value={this.state.startTime}

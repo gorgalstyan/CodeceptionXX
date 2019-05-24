@@ -9,7 +9,7 @@
 import React, { Component } from 'react';
 import { FlatList, StyleSheet, View, Text, SafeAreaView, Platform, DeviceEventEmitter, Linking } from 'react-native';
 import Beacons from 'react-native-beacons-manager';
-import { ListItem } from 'react-native-elements'
+import { ListItem, Image } from 'react-native-elements'
 
 import moment from 'moment'
 
@@ -122,7 +122,8 @@ export default class App extends Component<Props> {
   }
 
   onPress(item, event) {
-    const atTime = moment();
+    const { startTime } = this.state;
+    const atTime = moment(0, 'HH').add(startTime, 'm')
     if(Platform.OS === 'ios') {
       const referenceDate = moment.utc('2001-01-01');
       const secondsSinceRefDate = atTime.unix() - referenceDate.unix();
@@ -168,7 +169,7 @@ export default class App extends Component<Props> {
           </View>
         }
         // rightTitle={meetingsText}
-        // rightSubtitle={item.distance ? `${item.distance}m` : null}
+        rightSubtitle={item.distance ? `${item.distance}m` : null}
         // leftAvatar={{ source: { uri: item.avatar_url } }}
         bottomDivider={true}
       />
@@ -179,32 +180,9 @@ export default class App extends Component<Props> {
     const rooms = Object.keys(this.state.foundRooms).length > 0 ? this.state.roomArray : getAllRooms();
     return (
       <SafeAreaView style={styles.droidSafeArea}>
+        <Image source={require('./res/iconSpark.png')} style={{height: 50, width: 50, alignSelf: 'center'}}/>
         <TimeSelector initialStartTime={this.initialStartTime} initialEndTime={this.initialEndTime}
           onChange={val => this.onTimeValueChange(val)} />
-        {/* <View>
-          <Text style={{ padding: 10, fontSize: 20 }}>{startTimeText} - {endTimeText}</Text>
-          <Slider
-            style={{ height: 50 }}
-            value={this.state.startTime}
-            minimumValue={minTime}
-            maximumValue={maxTime}
-            step={5}
-            onValueChange={val => this.onStartValueChange(val)}
-          />
-          <Slider
-            style={{ height: 50 }}
-            value={this.state.endTime}
-            minimumValue={minTime}
-            maximumValue={maxTime}
-            step={5}
-            onValueChange={val => this.onEndValueChange(val)}
-          />
-        </View> */}
-        {/* {Object.keys(this.state.foundRooms).length > 0 ? <FlatList
-          keyExtractor={this.keyExtractor}
-          data={this.state.roomArray}
-          renderItem={this.renderItem}
-        /> : <Text>No Nearby Rooms Available</Text>} */}
         <FlatList
           keyExtractor={this.keyExtractor}
           data={rooms}
