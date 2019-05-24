@@ -7,12 +7,14 @@
  */
 
 import React, { Component } from 'react';
-import { FlatList, StyleSheet, Text, View, SafeAreaView, Platform, DeviceEventEmitter } from 'react-native';
+import { FlatList, StyleSheet, View, Text, SafeAreaView, Platform, DeviceEventEmitter, Linking } from 'react-native';
 import Beacons from 'react-native-beacons-manager';
 import { ListItem } from 'react-native-elements'
-import Slider from '@react-native-community/slider';
 
 import moment from 'moment'
+
+import getRoomsAvailabilityData from './services/availability'
+import TimeSelector from './components/TimeSelector';
 
 const roomsData = require('./fixtures/CA-KM-MeetingRooms.json')
 
@@ -39,11 +41,23 @@ function getRoomData(id) {
   };
 };
 
-const minTime = 6 * 60;
-const maxTime = 19 * 60;
-const minMeetingDuration = 15;
+let allRooms = null;
+function getAllRooms() {
+  if (allRooms) return allRooms;
 
-
+  allRooms = [];
+  for (const key in roomsData) {
+    const roomData = roomsData[key];
+    const parts = roomData.Name.split(regex) || []
+    const sub = parts[1];
+    allRooms.push({
+      ...roomData,
+      title: parts[0] || roomData.Name,
+      subTitle: (sub && `Capacity ${sub}`) || '',
+    });
+  }
+  return allRooms;
+};
 
 type Props = {};
 export default class App extends Component<Props> {
@@ -55,99 +69,119 @@ export default class App extends Component<Props> {
     let currentMins = mmt.diff(mmtMidnight, 'minutes');
     currentMins = Math.floor(currentMins / 15) * 15;
 
+    this.initialStartTime = currentMins;
+    this.initialEndTime = currentMins + 60;
+
     this.state = {
       foundRooms: {},
-      startTime: currentMins,
-      endTime: currentMins + 60,
+      startTime: this.initialStartTime,
+      endTime: this.initialEndTime,
     }
   }
 
   componentWillMount() {
     Beacons.requestWhenInUseAuthorization();
+    // console.log('found becons', data);
     Beacons.startRangingBeaconsInRegion({ identifier: 'Thanks', uuid: 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825' });
     Beacons.startUpdatingLocation();
     DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
-      console.log('found becons', data);
-      Beacons.startRangingBeaconsInRegion({ identifier: 'Thanks', uuid: 'FDA50693-A4E2-4FB1-AFCF-C6EB07647825' });
-      Beacons.startUpdatingLocation();
-
-      DeviceEventEmitter.addListener('beaconsDidRange', (data) => {
-        let newFoundRooms = {};
-        data.beacons.forEach(element => {
-          newFoundRooms = this.state.foundRooms;
-          newFoundRooms[element.major] = {
-            proximity: element.proximity,
-            distance: element.accuracy ? element.accuracy.toFixed(2) : 20,
-            ...getRoomData(element.major)
-          }
-          console.log('found rooms', newFoundRooms);
-          const roomArray = Object.keys(newFoundRooms).map(i => newFoundRooms[i])
-          this.setState({
-            foundRooms: newFoundRooms,
-            roomArray: roomArray
-          });
+      let newFoundRooms = {};
+      data.beacons.forEach(element => {
+        newFoundRooms = this.state.foundRooms;
+        newFoundRooms[element.major] = {
+          proximity: element.proximity,
+          distance: element.accuracy ? element.accuracy.toFixed(2) : 20,
+          ...getRoomData(element.major)
+        }
+        // console.log('found rooms', newFoundRooms);
+        const roomArray = Object.keys(newFoundRooms).map(i => newFoundRooms[i])
+        this.setState({
+          foundRooms: newFoundRooms,
+          roomArray: roomArray
         });
-        // console.log('found beacons', this.state.foundRooms);
       });
+      // console.log('found beacons', this.state.foundRooms);
     });
+  }
+
+  componentDidMount() {
+    getRoomsAvailabilityData().then(availability => {
+      this.setState({
+        availability,
+      })
+    })
   }
 
   componentWillUnMount() {
     this.beaconsDidRange = null;
   }
 
-  keyExtractor = (item, index) => item.EmailAddress;
-
-  renderItem = ({ item }) => (
-    <ListItem
-      title={item.title}
-      subtitle={item.subTitle + ' Distance: ' + item.distance + 'm'}
-      // leftAvatar={{ source: { uri: item.avatar_url } }}
-      bottomDivider={true}
-    />
-  )
-
-  onStartValueChange(val) {
-    const dur = this.state.endTime - this.state.startTime;
-    let startTime = val;
-    let endTime = startTime + dur;
-    if (endTime > maxTime) {
-      endTime = maxTime;
-    }
-    const maxStart = endTime - minMeetingDuration;
-    if (maxStart < startTime) startTime = maxStart;
-    this.setState({
-      startTime,
-      endTime,
-    }
-    )
+  onTimeValueChange(val) {
+    const { startTime, endTime } = val;
+    this.setState({ startTime, endTime });
   }
 
-  onEndValueChange(val) {
-    let startTime = this.state.startTime;
-    let endTime = val;
-    const maxStart = endTime - minMeetingDuration;
-    if (maxStart < startTime) startTime = maxStart;
-    if (startTime < minTime) {
-      startTime = minTime;
-      endTime = startTime + minMeetingDuration;
-    };
-    this.setState({
-      startTime,
-      endTime,
+  onPress(item, event) {
+    const atTime = moment();
+    if(Platform.OS === 'ios') {
+      const referenceDate = moment.utc('2001-01-01');
+      const secondsSinceRefDate = atTime.unix() - referenceDate.unix();
+      // Linking.openURL('calshow:' + secondsSinceRefDate);
+      Linking.openURL('x-apple-calevent://' + secondsSinceRefDate);
+    } else if(Platform.OS === 'android') {
+      const msSinceEpoch = atTime.valueOf(); // milliseconds since epoch
+      Linking.openURL('content://com.android.calendar/time/' + msSinceEpoch);
     }
+  }
+
+  keyExtractor = (item, index) => item.EmailAddress;
+
+  renderItem = ({ item }) => {
+    const { startTime, endTime, availability } = this.state;
+    const meetings = {};
+    if (availability) {
+      const doy = moment().dayOfYear();
+      const roomId = item.EmailAddress;
+      const roomAvailability = (availability[roomId] || {})[doy];
+      if (roomAvailability) {
+        for (let time = startTime; time < endTime; time += 5) {
+          const mi = roomAvailability[time];
+          if (mi) {
+            meetings[mi.id] = mi;
+          }
+        }
+      }
+    }
+    return (
+      <ListItem onPress={event => this.onPress(item, event)}
+        title={
+          <View>
+            <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{item.title}</Text>
+            <Text style={{ fontSize: 16 }}>{item.subTitle}</Text>
+          </View>
+        }
+        // subtitle={item.subTitle}
+        subtitle={
+          <View>
+            {Object.values(meetings).map(mi =>
+              (<Text key={mi.id} style={{ paddingTop: 3 }} >{`${mi.subject} ${mi.start.format("h:mma")}-${mi.end.format("h:mma")}`}</Text>))}
+          </View>
+        }
+        // rightTitle={meetingsText}
+        // rightSubtitle={item.distance ? `${item.distance}m` : null}
+        // leftAvatar={{ source: { uri: item.avatar_url } }}
+        bottomDivider={true}
+      />
     )
   }
 
   render() {
-    const startTime = this.state.startTime;
-    const endTime = this.state.endTime;
-    // const startTimeText = moment(0, 'HH').add(startTime, 'm').format("h:mm a");
-    const startTimeText = moment(0, 'HH').add(startTime, 'm').format("h:mm a");
-    const endTimeText = moment(0, 'HH').add(endTime, 'm').format("h:mm a");
+    const rooms = Object.keys(this.state.foundRooms).length > 0 ? this.state.roomArray : getAllRooms();
     return (
       <SafeAreaView style={styles.droidSafeArea}>
-        <View>
+        <TimeSelector initialStartTime={this.initialStartTime} initialEndTime={this.initialEndTime}
+          onChange={val => this.onTimeValueChange(val)} />
+        {/* <View>
           <Text style={{ padding: 10, fontSize: 20 }}>{startTimeText} - {endTimeText}</Text>
           <Slider
             style={{ height: 50 }}
@@ -165,12 +199,18 @@ export default class App extends Component<Props> {
             step={5}
             onValueChange={val => this.onEndValueChange(val)}
           />
-        </View>
-        {Object.keys(this.state.foundRooms).length > 0 ? <FlatList
+        </View> */}
+        {/* {Object.keys(this.state.foundRooms).length > 0 ? <FlatList
           keyExtractor={this.keyExtractor}
           data={this.state.roomArray}
           renderItem={this.renderItem}
-        /> : <Text>No Nearby Rooms Available</Text>}
+        /> : <Text>No Nearby Rooms Available</Text>} */}
+        <FlatList
+          keyExtractor={this.keyExtractor}
+          data={rooms}
+          extraData={this.state}
+          renderItem={this.renderItem}
+        />
       </SafeAreaView>
     )
   }
